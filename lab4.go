@@ -40,7 +40,7 @@ func parse(commandLine string) engine.Command {
 func main() {
 	eventLoop := new(engine.EventLoop)
 	eventLoop.Start()
-	if input, err := os.Open("./commands.txt"); err == nil {
+	if input, err := os.Open("./examples.txt"); err == nil {
 		defer input.Close()
 		scanner := bufio.NewScanner(input)
 		for scanner.Scan() {
