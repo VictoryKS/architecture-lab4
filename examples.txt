@@ -1,0 +1,8 @@
+print cat
+printc 1 m
+printc dog hot
+print hare
+merry christmas
+printc 3 k
+printc 3 fox
+1984
