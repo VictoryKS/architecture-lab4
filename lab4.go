@@ -15,25 +15,25 @@ func parse(commandLine string) engine.Command {
 			count, err := strconv.Atoi(parts[1])
 			symbol := parts[2]
 			if err != nil {
-					return &engine.PrintCommand{Arg: "SYNTAX ERROR: " + err.Error()}
+					return &PrintCommand{Arg: "SYNTAX ERROR: " + err.Error()}
 			} else {
 				if (len(symbol) == 1) {
-						return &engine.PrintcCommand{Count: count, Symbol: symbol}
+						return &PrintcCommand{Count: count, Symbol: symbol}
 				} else {
-						return &engine.PrintCommand{Arg: "SYNTAX ERROR: illegal symbol argument"}
+						return &PrintCommand{Arg: "SYNTAX ERROR: illegal symbol argument"}
 				}
 			}
 		} else {
-			return &engine.PrintCommand{Arg: "SYNTAX ERROR: illegal printc argument"}
+			return &PrintCommand{Arg: "SYNTAX ERROR: illegal printc argument"}
 		}
 	} else if parts[0] == "print" {
 		if len(parts) == 2 {
-			return &engine.PrintCommand{Arg: parts[1]}
+			return &PrintCommand{Arg: parts[1]}
 		} else {
-			return &engine.PrintCommand{Arg: "SYNTAX ERROR: print arguments"}
+			return &PrintCommand{Arg: "SYNTAX ERROR: print arguments"}
 		}
 	} else {
-		return &engine.PrintCommand{Arg: "SYNTAX ERROR: unexpected command"}
+		return &PrintCommand{Arg: "SYNTAX ERROR: unexpected command"}
 	}
 }
 

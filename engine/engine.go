@@ -8,20 +8,30 @@ type Handler interface {
 	Post(cmd Command)
 }
 
+type Command interface {
+	Execute(handler Handler)
+}
+
+type finishCommand func (handler Handler)
+
+func (c finishCommand) Execute(handler Handler) {
+	c(handler)
+}
+
 type messageQueue struct {
 	sync.Mutex
 	data []Command
 	waiting bool
+	receiveSignal chan struct{}
 }
 
-var receiveSignal = make(chan struct{})
 func (mq *messageQueue) push(cmd Command) {
 	mq.Lock()
 	defer mq.Unlock()
 	mq.data = append(mq.data, cmd)
 	if mq.waiting {
 		mq.waiting = false
-		receiveSignal <- struct{}{}
+		mq.receiveSignal <- struct{}{}
 	}
 }
 
@@ -31,7 +41,7 @@ func (mq *messageQueue) pull() Command {
 	if len(mq.data) == 0 {
 		mq.waiting = true;
 		mq.Unlock()
-		<- receiveSignal
+		<- mq.receiveSignal
 		mq.Lock()
 	}
 	res := mq.data[0]
@@ -52,6 +62,7 @@ type EventLoop struct {
 
 func (el *EventLoop) Start() {
 	el.queue = new(messageQueue)
+	el.queue.receiveSignal = make(chan struct{})
 	el.stopSignal = make(chan struct{})
 	go func() {
 		for (!el.terminateReceived) || (el.queue.size() != 0) {
